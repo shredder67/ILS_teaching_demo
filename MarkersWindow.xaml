@@ -1,0 +1,139 @@
+﻿<Window x:Class="MarkersDemonstration.MarkersWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:MarkersDemonstration"
+        xmlns:oxy="http://oxyplot.org/wpf"
+        mc:Ignorable="d"
+        Title="MarkersWindow" Height="650" Width="1000" ResizeMode="NoResize" Loaded="Window_Loaded">
+
+    <Window.Resources>
+        <ResourceDictionary x:Name="ImageResources">
+            <BitmapImage x:Key="TopDownPlaneIcon" UriSource="/Image/top-down-icon.png"/>
+            <BitmapImage x:Key="SideViewPlaneIcon" UriSource="/Image/side-view-plane.png"/>
+        </ResourceDictionary>
+    </Window.Resources>
+    
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="8*" />
+            <ColumnDefinition Width="5" />
+            <ColumnDefinition Width="2*" />
+        </Grid.ColumnDefinitions>
+        <Grid Grid.Column="0"> 
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="6*" />
+                <ColumnDefinition Width="5" />
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="5" />
+                <ColumnDefinition Width="7*" />
+            </Grid.ColumnDefinitions>
+
+            <!-- Графические панели -->
+            <StackPanel Grid.Column="0" Orientation="Vertical">
+
+                <Border Grid.Column="0" Margin="25 25 25 0" BorderBrush="Silver" BorderThickness="5" Height="260" Width="277" >
+                    <Canvas x:Name="yxCanvas" ClipToBounds="True" Height="250" Width="267">
+                        <Canvas.Background>
+                            <ImageBrush ImageSource="Resources/yxCanvas.png"/>
+                        </Canvas.Background>
+                    </Canvas>
+                </Border>
+
+                <TextBlock HorizontalAlignment="Center" FontSize="14" FontWeight="Bold" >
+                Курсовой маяк
+                </TextBlock>
+
+                <Border Margin="25 25 25 0" BorderBrush="Silver" BorderThickness="5" Height="260" Width="277">
+                    <Canvas x:Name="zxCanvas" ClipToBounds="True" Height="250" Width="267">
+                        <Canvas.Background>
+                            <ImageBrush ImageSource="Resources/zxCanvas.png"/>
+                        </Canvas.Background>
+                    </Canvas>
+                </Border>
+
+                <TextBlock HorizontalAlignment="Center" FontSize="14" FontWeight="Bold" >
+                Глиссадный маяк
+                </TextBlock>
+
+            </StackPanel>
+
+            <GridSplitter Grid.Column="1" Width="5" HorizontalAlignment="Stretch" />
+
+            <!-- Ползунки -->
+            <StackPanel Grid.Column="2" Orientation="Vertical" VerticalAlignment="Center">
+                <Border Grid.Column="1"  Background="GhostWhite" BorderBrush="Silver" BorderThickness="2" CornerRadius="10,10,10,10" HorizontalAlignment="Center" >
+                    <Slider  Orientation="Vertical" IsDirectionReversed="True"  x:Name="zSlider" Height="150" Margin="5 5 5 5" SmallChange="1" Value="50" Minimum="5" Maximum="100" ValueChanged="Slider_ValueChanged"/>
+                </Border>
+
+                <TextBlock HorizontalAlignment="Center" FontWeight="Bold" >
+                Oz
+                </TextBlock>
+
+                <Border Grid.Column="1"  Background="GhostWhite" BorderBrush="Silver" BorderThickness="2" CornerRadius="10,10,10,10" HorizontalAlignment="Center" Margin="0 20 0 0" >
+                    <Slider  Orientation="Vertical"  x:Name="xSlider" Margin="5 5 5 5" Height="150" SmallChange="1" Value="50" Minimum="5" Maximum="100" ValueChanged="Slider_ValueChanged" />
+                </Border>
+
+                <TextBlock HorizontalAlignment="Center" FontWeight="Bold">
+                Ox
+                </TextBlock>
+
+                <Border Grid.Column="1"  Background="GhostWhite" BorderBrush="Silver" BorderThickness="2" CornerRadius="10,10,10,10" HorizontalAlignment="Center" Margin="0 20 0 0"  >
+                    <Slider  Orientation="Vertical"  x:Name="ySlider" Margin="5 5 5 5" Height="150" SmallChange="1" Value="50" Minimum="5" Maximum="100" ValueChanged="Slider_ValueChanged" />
+                </Border>
+
+                <TextBlock HorizontalAlignment="Center" FontWeight="Bold">
+                Oy
+                </TextBlock>
+            </StackPanel>
+
+            <GridSplitter Grid.Column="3" Width="5" HorizontalAlignment="Stretch" />
+
+            <Grid Grid.Column="4">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="5*"/>
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
+
+                <!--PFD панель-->
+                <Grid Grid.Row="0">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="*"/>
+                        <RowDefinition Height="4*"/>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
+
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="0.2*"/>
+                        <ColumnDefinition Width="5*"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+
+                    <Border  Grid.Row ="1" Grid.Column="1" VerticalAlignment="Bottom" HorizontalAlignment="Right" BorderBrush="Gray" BorderThickness="4" CornerRadius="20 20 20 20">
+                        <Border.Background>
+                            <ImageBrush ImageSource="Resources/pfdCanvas.png"/>
+                        </Border.Background>
+                        <Canvas x:Name="pfdCanvas" ClipToBounds="True" Width="280" Height="300" />
+                    </Border>
+
+                    <Border  Grid.Row ="2" Grid.Column="1" VerticalAlignment="Top" HorizontalAlignment="Right" Margin = "0 5 0 0" BorderBrush="Gray" BorderThickness="3" CornerRadius="5">
+                        <Canvas x:Name="VDCanvas" ClipToBounds="True" Height="30" Width="280" HorizontalAlignment="Center" >
+                        </Canvas>
+                    </Border>
+
+                    <Border  Grid.Row ="1" Grid.Column="2" VerticalAlignment="Bottom" HorizontalAlignment="Left" Margin="5 0 0 0" BorderBrush="Gray" BorderThickness="3" CornerRadius="5">
+                        <Canvas x:Name="HDCanvas" ClipToBounds="True" Height="300" Width="30" >
+                        </Canvas>
+                    </Border>
+                </Grid>
+            </Grid>
+        </Grid>
+
+        <GridSplitter Grid.Column="1" Width="5" HorizontalAlignment="Stretch" />
+
+        <StackPanel x:Name="PlotColumn" Grid.Column="2" Orientation="Vertical">
+            <!-- Plots are added through code to bind ampitude of functions to plane position -->
+        </StackPanel>
+    </Grid>
+</Window>
