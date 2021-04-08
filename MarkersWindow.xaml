@@ -64,7 +64,7 @@
             <!-- Ползунки -->
             <StackPanel Grid.Column="2" Orientation="Vertical" VerticalAlignment="Center">
                 <Border Grid.Column="1"  Background="GhostWhite" BorderBrush="Silver" BorderThickness="2" CornerRadius="10,10,10,10" HorizontalAlignment="Center" >
-                    <Slider  Orientation="Vertical" IsDirectionReversed="True"  x:Name="zSlider" Height="150" Margin="5 5 5 5" SmallChange="1" Value="50" Minimum="5" Maximum="100" ValueChanged="Slider_ValueChanged"/>
+                    <Slider  Orientation="Vertical" IsDirectionReversed="True"  x:Name="zSlider" Height="150" Margin="5 5 5 5" SmallChange="1" Value="90" Minimum="0" Maximum="180" ValueChanged="Slider_ValueChanged"/>
                 </Border>
 
                 <TextBlock HorizontalAlignment="Center" FontWeight="Bold" >
@@ -72,7 +72,7 @@
                 </TextBlock>
 
                 <Border Grid.Column="1"  Background="GhostWhite" BorderBrush="Silver" BorderThickness="2" CornerRadius="10,10,10,10" HorizontalAlignment="Center" Margin="0 20 0 0" >
-                    <Slider  Orientation="Vertical"  x:Name="xSlider" Margin="5 5 5 5" Height="150" SmallChange="1" Value="50" Minimum="5" Maximum="100" ValueChanged="Slider_ValueChanged" />
+                    <Slider  Orientation="Vertical"  x:Name="xSlider" Margin="5 5 5 5" Height="150" SmallChange="1" Value="90" Minimum="0" Maximum="180" ValueChanged="Slider_ValueChanged" />
                 </Border>
 
                 <TextBlock HorizontalAlignment="Center" FontWeight="Bold">
@@ -80,7 +80,7 @@
                 </TextBlock>
 
                 <Border Grid.Column="1"  Background="GhostWhite" BorderBrush="Silver" BorderThickness="2" CornerRadius="10,10,10,10" HorizontalAlignment="Center" Margin="0 20 0 0"  >
-                    <Slider  Orientation="Vertical"  x:Name="ySlider" Margin="5 5 5 5" Height="150" SmallChange="1" Value="50" Minimum="5" Maximum="100" ValueChanged="Slider_ValueChanged" />
+                    <Slider  Orientation="Vertical"  x:Name="ySlider" Margin="5 5 5 5" Height="150" SmallChange="1" Value="90" Minimum="0" Maximum="180" ValueChanged="Slider_ValueChanged" />
                 </Border>
 
                 <TextBlock HorizontalAlignment="Center" FontWeight="Bold">

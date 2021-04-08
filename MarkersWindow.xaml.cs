@@ -81,20 +81,22 @@ namespace MarkersDemonstration
             lHorizontal.Stroke = Brushes.Violet;
             lHorizontal.StrokeThickness = 3;
 
+            //local Canvases for plane
+
             localYXCanvas = new Canvas
             {
-                Height = 100,
-                Width = 100,
-                Background = Brushes.OrangeRed
+                Height = 180,
+                Width = 180,
+                Background = Brushes.Transparent
             };
             localYXCanvas.PreviewMouseMove += Canvas_PreviewMouseMove;
             localYXCanvas.PreviewMouseLeftButtonUp += Canvas_PreviewLeftButtonUp;
 
             localZXCanvas = new Canvas
             {
-                Height = 100,
-                Width = 100,
-                Background = Brushes.Orange
+                Height = 180,
+                Width = 180,
+                Background = Brushes.Transparent
             };
             localZXCanvas.PreviewMouseMove += Canvas_PreviewMouseMove;
             localZXCanvas.PreviewMouseLeftButtonUp += Canvas_PreviewLeftButtonUp;
@@ -117,19 +119,38 @@ namespace MarkersDemonstration
             double y0 = ySlider.Value;
             double z0 = zSlider.Value;
 
-            //Draw the "plane" on ZX and YX canvases
-            Canvas.SetLeft(localYXCanvas, 163);
-            Canvas.SetTop(localYXCanvas, 75);
-            Canvas.SetLeft(localZXCanvas, 163);
-            Canvas.SetTop(localZXCanvas, 101);
+            //Create Borders for local Canvases
+            Border bordZX = new Border {
+                Width = localZXCanvas.Width + 1,
+                Height = localZXCanvas.Height + 1,
+                BorderThickness = new Thickness(1),
+                BorderBrush = Brushes.PaleVioletRed
+            };
+            bordZX.Child = localZXCanvas;
 
+            Border bordYX = new Border
+            {
+                Width = localZXCanvas.Width + 1,
+                Height = localZXCanvas.Height + 1,
+                BorderThickness = new Thickness(1),
+                BorderBrush = Brushes.PaleVioletRed,
+            };
+            bordYX.Child = localYXCanvas;
+
+
+            Canvas.SetLeft(bordYX, 83);
+            Canvas.SetTop(bordYX, 35);
+            Canvas.SetLeft(bordZX, 83);
+            Canvas.SetTop(bordZX, 61);
+
+            //Draw the "plane" on YX and ZX canvases
             Canvas.SetLeft(planeYX, x0 - planeWidth/2);
             Canvas.SetTop(planeYX, y0 - planeHeight/2);
             Canvas.SetLeft(planeZX, x0 - planeWidth/2);
             Canvas.SetTop(planeZX, z0 - planeHeight/2);
 
-            yxCanvas.Children.Add(localYXCanvas);
-            zxCanvas.Children.Add(localZXCanvas);
+            yxCanvas.Children.Add(bordYX);
+            zxCanvas.Children.Add(bordZX);
             localYXCanvas.Children.Add(planeYX);
             localZXCanvas.Children.Add(planeZX);
 
@@ -189,19 +210,19 @@ namespace MarkersDemonstration
 
             //коэфециенты прямой для расчета смещения по Z/X
             double k = 1/Math.Sqrt(3);
-            double b = 67;
+            double b = 147;
 
-            double d = 110; // коэф. сжатия параметров для pfd
-
-            if(senderName.Equals("zSlider"))
+            if(senderName.Equals("zSlider") || senderName.Equals("xSlider"))
             {
                 double z1 = zSlider.Value;
                 Canvas.SetTop(planeZX, z1 - planeHeight/2);
 
                 double x1 = xSlider.Value;
+                Canvas.SetLeft(planeYX, x1 - planeWidth / 2);
+                Canvas.SetLeft(planeZX, x1 - planeWidth / 2);
+
                 double dist = Math.Abs((z1 - planeHeight/2) + k * (x1 - planeWidth/2) - b) / Math.Sqrt(1 + k); //from 0 to 1/2 of diagonal
-                double K = 1.05 + x1 / 3000; //поправочный коэф. (для корректировки отображения прямой)
-                double normDist = Math.Round(dist * pfdCanvas.Height / d) * K;
+                double normDist = Math.Round(dist * pfdCanvas.Height / (localZXCanvas.Width));
                 bool isLower = z1 - planeHeight / 2 >= -k * (x1 - planeWidth / 2) + b;
 
                 double newPosition;
@@ -212,7 +233,7 @@ namespace MarkersDemonstration
                 }
                 else
                 {
-                    //plane Higher then signal
+                    //plane HIGHER then signal
                     newPosition = pfdCanvas.Height / 2 + normDist;
                 }
 
@@ -246,10 +267,11 @@ namespace MarkersDemonstration
                 double y1 = ySlider.Value;
                 Canvas.SetTop(planeYX, y1 - planeHeight/2);
 
-                //Update Line
-                double normY = Math.Round(((y1 + planeHeight/2) * pfdCanvas.Width / 120));
-                if (normY >= 10 && normY <= pfdCanvas.Width - 10)
+                if (y1 >= 35 && y1 <= 140) // Line and diamonds update zone
                 {
+                    //Update Line
+                    double normY = Math.Round((y1 * pfdCanvas.Width / 120)) - 65; // 65 just works, I dk why
+
                     lVertical.X1 = lVertical.X2 = normY;
 
                     //Update Diamond
@@ -269,56 +291,6 @@ namespace MarkersDemonstration
                     {
                         SPC["L150"].Amp = 5 + deltaAmp;
                         SPC["L90"].Amp = 5 - deltaAmp;
-                    }
-                    SPC.Update();
-                }
-
-            } else if (senderName.Equals("xSlider"))
-            {
-                double x1 = xSlider.Value;
-                Canvas.SetLeft(planeYX, x1 - planeWidth/2);
-                Canvas.SetLeft(planeZX, x1 - planeWidth/2);
-
-                double z1 = zSlider.Value;
-                double dist = Math.Abs((z1 - planeHeight/2) + k * (x1 - planeWidth/2) - b) / Math.Sqrt(1 + k); //from 0 to 1/2 of diagonal
-                double K = 1 + x1 / 400; //поправочный коэф. (для корректировки отображения прямой)
-                double normDist = Math.Round(dist * pfdCanvas.Height / d) * K;
-                bool isLower = z1 - planeHeight / 2 >= -k * (x1 - planeWidth / 2) + b;
-
-                double newPosition;
-                if (z1 - planeHeight / 2 >= -k * (x1 - planeWidth / 2) + b)
-                {
-                    //plane LOWER then signal, line is up
-                    newPosition = pfdCanvas.Height / 2 - normDist;
-                }
-                else
-                {
-                    //plane Higher then signal, line is lower
-                    newPosition = pfdCanvas.Height / 2 + normDist;
-                }
-
-                if (newPosition <= pfdCanvas.Height - 10 && newPosition >= 10)
-                {
-
-                        lHorizontal.Y1 = lHorizontal.Y2 = newPosition;
-
-                    //Update Diamond
-                    HDiamond.Points[0] = new Point(HDCanvas.Width / 2, newPosition - 10);
-                    HDiamond.Points[1] = new Point(HDCanvas.Width, newPosition);
-                    HDiamond.Points[2] = new Point(HDCanvas.Width / 2, newPosition + 10);
-                    HDiamond.Points[3] = new Point(0, newPosition);
-
-                    //Update Plots (z change - GS150/GS90)
-                    double deltaAmp = normDist * 5 / (pfdCanvas.Height / 2);
-                    if (isLower)
-                    {
-                        SPC["GS150"].Amp = 5 + deltaAmp;
-                        SPC["GS90"].Amp = 5 - deltaAmp;
-                    }
-                    else
-                    {
-                        SPC["GS150"].Amp = 5 - deltaAmp;
-                        SPC["GS90"].Amp = 5 + deltaAmp;
                     }
                     SPC.Update();
                 }
