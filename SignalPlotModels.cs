@@ -34,8 +34,11 @@ namespace MarkersDemonstration
         public double Amp { get; set; }
         public double Freq { get; set; }
 
-        private double Inner_Amp { get; set; }
-        private double Inner_Freq { get; set; }
+        public double Inner_Amp { get; set; }
+        public double Inner_Freq { get; set; }
+        
+        public double M { get; set; } // modulation koef
+
 
         public SignalPlotModel()
         {
@@ -70,12 +73,14 @@ namespace MarkersDemonstration
         public SignalPlotModel(double freq, double amp, String title = "") : this()
         {
             this.Freq = freq;
-            this.Amp = amp;
+            this.Inner_Amp = amp;
+            this.Amp = 2;
+            this.M = 0.9;
             Model.Title = title;
 
 
             //Inner_Amp*cos(i_w*t)*[1 + Amp/Inner_Amp * cos(w*t)], where w = 2 pi * freq
-            this.curve = (x) => Inner_Amp * Math.Cos(Inner_Freq * 2 * Math.PI * x) * (1 + Amp/Inner_Amp * Math.Cos((2 * Math.PI * Freq)*x));
+            this.curve = (x) => Inner_Amp * Math.Cos(Inner_Freq * 2 * Math.PI * x) * (1 + M / Amp * Math.Cos((2 * Math.PI * Freq)*x));
             FunctionSeries funcVals = new FunctionSeries(curve, 0, 0.5, 0.001);
             funcVals.TrackerFormatString = Model.Title;
             Model.Series.Add(funcVals);
@@ -84,7 +89,7 @@ namespace MarkersDemonstration
         public void Update()
         {
             //Inner_Amp*cos(i_w*t)*[1 + Amp/Inner_Amp * cos(w*t)], where w = 2 pi * freq
-            this.curve = (x) => Inner_Amp * Math.Cos(Inner_Freq * 2 * Math.PI * x) * (1 + Amp / Inner_Amp * Math.Cos((2 * Math.PI * Freq) * x));
+            this.curve = (x) => Inner_Amp * Math.Cos(Inner_Freq * 2 * Math.PI * x) * (1 + M / Amp * Math.Cos((2 * Math.PI * Freq) * x));
             FunctionSeries funcVals = new FunctionSeries(curve, 0, 0.5, 0.001);
             funcVals.TrackerFormatString = Model.Title;
             Model.Series[0] = funcVals;

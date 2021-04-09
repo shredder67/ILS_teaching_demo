@@ -104,9 +104,9 @@ namespace MarkersDemonstration
             //Plots data
             SPC = new SignalPlotCollection();
             SPC.Add("L150", new SignalPlotModel(15, 3, "КРМ 150Hz"));
-            SPC.Add("L90", new SignalPlotModel(9, 3, "КРМ 90Hz"));
-            SPC.Add("GS150", new SignalPlotModel(15, 3, "ГРМ 150Hz"));
+            SPC.Add("L90", new SignalPlotModel(9, 3, "КРМ 90Hz"));         
             SPC.Add("GS90", new SignalPlotModel(9, 3, "ГРМ 90Hz"));
+            SPC.Add("GS150", new SignalPlotModel(15, 3, "ГРМ 150Hz"));
 
             InitializeComponent();
         }
@@ -120,8 +120,8 @@ namespace MarkersDemonstration
                 double k0 = -1;
                 double b0 = 140;
                 //lower border, angle about pi/12
-                double k1 = -0.27;
-                double b1 = 154;
+                double k1 = -0.25;
+                double b1 = 170;
 
                 bool isIn = (f > k0 * x + b0) && (f < k1 * x + b1);
                 return isIn;
@@ -149,25 +149,25 @@ namespace MarkersDemonstration
                 double deltaAmp = dist * 5 / (pfdCanvas.Height / 2);
                 if (isLower)
                 {
-                    SPC["GS150"].Amp = 4 + deltaAmp;
-                    SPC["GS90"].Amp = 4 - deltaAmp;
+                    SPC["GS150"].Inner_Amp = 4 + deltaAmp;
+                    SPC["GS90"].Inner_Amp = 4 - deltaAmp;
                 }
                 else
                 {
-                    SPC["GS150"].Amp = 4 - deltaAmp;
-                    SPC["GS90"].Amp = 4 + deltaAmp;
+                    SPC["GS150"].Inner_Amp = 4 - deltaAmp;
+                    SPC["GS90"].Inner_Amp = 4 + deltaAmp;
                 }
                 
             } else
             {
                 if (isLower)
                 {
-                    SPC["GS150"].Amp = 8;
-                    SPC["GS90"].Amp = 0;
+                    SPC["GS150"].Inner_Amp = 8;
+                    SPC["GS90"].Inner_Amp = 0;
                 } else
                 {
-                    SPC["GS150"].Amp = 0;
-                    SPC["GS90"].Amp = 8;
+                    SPC["GS150"].Inner_Amp = 0;
+                    SPC["GS90"].Inner_Amp = 8;
                 }
             }
             SPC.Update();
@@ -181,24 +181,24 @@ namespace MarkersDemonstration
                 double deltaAmp = Math.Abs(dist - pfdCanvas.Width / 2) * 5 / (pfdCanvas.Width / 2);
                 if (dist > pfdCanvas.Width / 2)
                 {
-                    SPC["L150"].Amp = 4 - deltaAmp;
-                    SPC["L90"].Amp = 4 + deltaAmp;
+                    SPC["L150"].Inner_Amp = 4 - deltaAmp;
+                    SPC["L90"].Inner_Amp = 4 + deltaAmp;
                 }
                 else
                 {
-                    SPC["L150"].Amp = 4 + deltaAmp;
-                    SPC["L90"].Amp = 4 - deltaAmp;
+                    SPC["L150"].Inner_Amp = 4 + deltaAmp;
+                    SPC["L90"].Inner_Amp = 4 - deltaAmp;
                 }
             } else
             {
                 if(dist > pfdCanvas.Width / 2)
                 {
-                    SPC["L150"].Amp = 0;
-                    SPC["L90"].Amp = 8;
+                    SPC["L150"].Inner_Amp = 0;
+                    SPC["L90"].Inner_Amp = 8;
                 } else
                 {
-                    SPC["L150"].Amp = 8;
-                    SPC["L90"].Amp = 0;
+                    SPC["L150"].Inner_Amp = 8;
+                    SPC["L90"].Inner_Amp = 0;
                 }
             }
             SPC.Update();
