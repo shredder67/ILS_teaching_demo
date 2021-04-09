@@ -125,9 +125,6 @@
     <Resource Include="Resources\BackgroundPlane.png" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="Resources\zxCanvas.png" />
-  </ItemGroup>
-  <ItemGroup>
     <Resource Include="Resources\pfdCanvas.png" />
   </ItemGroup>
   <ItemGroup>
@@ -148,6 +145,7 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Resources\yxCanvas.png" />
+    <Resource Include="Resources\zxCanvas.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

@@ -149,25 +149,25 @@ namespace MarkersDemonstration
                 double deltaAmp = dist * 5 / (pfdCanvas.Height / 2);
                 if (isLower)
                 {
-                    SPC["GS150"].Amp = 5 + deltaAmp;
-                    SPC["GS90"].Amp = 5 - deltaAmp;
+                    SPC["GS150"].Amp = 4 + deltaAmp;
+                    SPC["GS90"].Amp = 4 - deltaAmp;
                 }
                 else
                 {
-                    SPC["GS150"].Amp = 5 - deltaAmp;
-                    SPC["GS90"].Amp = 5 + deltaAmp;
+                    SPC["GS150"].Amp = 4 - deltaAmp;
+                    SPC["GS90"].Amp = 4 + deltaAmp;
                 }
                 
             } else
             {
                 if (isLower)
                 {
-                    SPC["GS150"].Amp = 10;
+                    SPC["GS150"].Amp = 8;
                     SPC["GS90"].Amp = 0;
                 } else
                 {
                     SPC["GS150"].Amp = 0;
-                    SPC["GS90"].Amp = 10;
+                    SPC["GS90"].Amp = 8;
                 }
             }
             SPC.Update();
@@ -181,23 +181,23 @@ namespace MarkersDemonstration
                 double deltaAmp = Math.Abs(dist - pfdCanvas.Width / 2) * 5 / (pfdCanvas.Width / 2);
                 if (dist > pfdCanvas.Width / 2)
                 {
-                    SPC["L150"].Amp = 5 - deltaAmp;
-                    SPC["L90"].Amp = 5 + deltaAmp;
+                    SPC["L150"].Amp = 4 - deltaAmp;
+                    SPC["L90"].Amp = 4 + deltaAmp;
                 }
                 else
                 {
-                    SPC["L150"].Amp = 5 + deltaAmp;
-                    SPC["L90"].Amp = 5 - deltaAmp;
+                    SPC["L150"].Amp = 4 + deltaAmp;
+                    SPC["L90"].Amp = 4 - deltaAmp;
                 }
             } else
             {
                 if(dist > pfdCanvas.Width / 2)
                 {
                     SPC["L150"].Amp = 0;
-                    SPC["L90"].Amp = 10;
+                    SPC["L90"].Amp = 8;
                 } else
                 {
-                    SPC["L150"].Amp = 10;
+                    SPC["L150"].Amp = 8;
                     SPC["L90"].Amp = 0;
                 }
             }
