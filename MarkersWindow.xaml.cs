@@ -111,6 +111,99 @@ namespace MarkersDemonstration
             InitializeComponent();
         }
 
+        //checks if plane is inside tight cone (exluding the big ones)
+        private bool IsInsideSignal(Rectangle plane, double x, double f)
+        {
+            if(plane == planeZX)
+            {
+                //upper border, angle about pi/4
+                double k0 = -1;
+                double b0 = 140;
+                //lower border, angle about pi/12
+                double k1 = -0.27;
+                double b1 = 154;
+
+                bool isIn = (f > k0 * x + b0) && (f < k1 * x + b1);
+                return isIn;
+            } else
+            {
+                //upper border, angle about pi/12
+                double k0 = -0.27;
+                double b0 = 83;
+
+                //lower border
+                double k1 = 0.27;
+                double b1 = 97;
+
+                bool isIn = (f > k0 * x + b0) && (f < k1 * x + b1);
+                return isIn;
+            }
+        }
+
+        //Update Plots (z/x change - GS150/GS90)
+        private void GSPlotUpdate(double x1, double z1, double dist, bool isLower)
+        {
+            //Update Plots (z change - GS150/GS90)
+            if (IsInsideSignal(planeZX, x1, z1))
+            {
+                double deltaAmp = dist * 5 / (pfdCanvas.Height / 2);
+                if (isLower)
+                {
+                    SPC["GS150"].Amp = 5 + deltaAmp;
+                    SPC["GS90"].Amp = 5 - deltaAmp;
+                }
+                else
+                {
+                    SPC["GS150"].Amp = 5 - deltaAmp;
+                    SPC["GS90"].Amp = 5 + deltaAmp;
+                }
+                
+            } else
+            {
+                if (isLower)
+                {
+                    SPC["GS150"].Amp = 10;
+                    SPC["GS90"].Amp = 0;
+                } else
+                {
+                    SPC["GS150"].Amp = 0;
+                    SPC["GS90"].Amp = 10;
+                }
+            }
+            SPC.Update();
+        }
+
+        //Update Plots (y/x change - L150/L90)
+        private void LPlotUpdate(double x, double y, double dist)
+        {
+            if (IsInsideSignal(planeYX, x, y))
+            {
+                double deltaAmp = Math.Abs(dist - pfdCanvas.Width / 2) * 5 / (pfdCanvas.Width / 2);
+                if (dist > pfdCanvas.Width / 2)
+                {
+                    SPC["L150"].Amp = 5 - deltaAmp;
+                    SPC["L90"].Amp = 5 + deltaAmp;
+                }
+                else
+                {
+                    SPC["L150"].Amp = 5 + deltaAmp;
+                    SPC["L90"].Amp = 5 - deltaAmp;
+                }
+            } else
+            {
+                if(dist > pfdCanvas.Width / 2)
+                {
+                    SPC["L150"].Amp = 0;
+                    SPC["L90"].Amp = 10;
+                } else
+                {
+                    SPC["L150"].Amp = 10;
+                    SPC["L90"].Amp = 0;
+                }
+            }
+            SPC.Update();
+        }
+
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
 
@@ -208,10 +301,6 @@ namespace MarkersDemonstration
 
             String senderName = (sender as Slider).Name;
 
-            //коэфециенты прямой для расчета смещения по Z/X
-            double k = 1/Math.Sqrt(3);
-            double b = 147;
-
             if(senderName.Equals("zSlider") || senderName.Equals("xSlider"))
             {
                 double z1 = zSlider.Value;
@@ -220,6 +309,10 @@ namespace MarkersDemonstration
                 double x1 = xSlider.Value;
                 Canvas.SetLeft(planeYX, x1 - planeWidth / 2);
                 Canvas.SetLeft(planeZX, x1 - planeWidth / 2);
+
+                //коэфециенты прямой для расчета смещения по Z/X
+                double k = 1 / Math.Sqrt(3);
+                double b = 147;
 
                 double dist = Math.Abs((z1 - planeHeight/2) + k * (x1 - planeWidth/2) - b) / Math.Sqrt(1 + k); //from 0 to 1/2 of diagonal
                 double normDist = Math.Round(dist * pfdCanvas.Height / (localZXCanvas.Width));
@@ -247,19 +340,13 @@ namespace MarkersDemonstration
                     HDiamond.Points[1] = new Point(HDCanvas.Width, newPosition);
                     HDiamond.Points[2] = new Point(HDCanvas.Width / 2, newPosition + 10);
                     HDiamond.Points[3] = new Point(0, newPosition);
+                }
 
-                    //Update Plots (z change - GS150/GS90)
-                    double deltaAmp = normDist * 5 / (pfdCanvas.Height / 2);
-                    if (isLower)
-                    {
-                        SPC["GS150"].Amp = 5 + deltaAmp;
-                        SPC["GS90"].Amp = 5 - deltaAmp;
-                    } else
-                    {
-                        SPC["GS150"].Amp = 5 - deltaAmp;
-                        SPC["GS90"].Amp = 5 + deltaAmp;
-                    }
-                    SPC.Update();
+                //Update Plots
+                GSPlotUpdate(x1, z1, normDist, isLower);
+                //In case x was changed
+                if (senderName.Equals("xSlider")) {
+                    LPlotUpdate(x1, ySlider.Value, Math.Round((ySlider.Value * pfdCanvas.Width / 120)) - 65);
                 }
 
             } else if (senderName.Equals("ySlider"))
@@ -270,7 +357,7 @@ namespace MarkersDemonstration
                 if (y1 >= 35 && y1 <= 140) // Line and diamonds update zone
                 {
                     //Update Line
-                    double normY = Math.Round((y1 * pfdCanvas.Width / 120)) - 65; // 65 just works, I dk why
+                    double normY = Math.Round((y1 * pfdCanvas.Width / 120)) - 65;
 
                     lVertical.X1 = lVertical.X2 = normY;
 
@@ -280,19 +367,8 @@ namespace MarkersDemonstration
                     VDiamond.Points[2] = new Point(normY, VDCanvas.Height);
                     VDiamond.Points[3] = new Point(normY - 10, VDCanvas.Height / 2);
 
-                    //Update Plots (z change - L150/L90)
-                    double deltaAmp = Math.Abs(normY - pfdCanvas.Width/2) * 5 / (pfdCanvas.Width / 2);
-                    if (normY > pfdCanvas.Width / 2)
-                    {
-                        SPC["L150"].Amp = 5 - deltaAmp;
-                        SPC["L90"].Amp = 5 + deltaAmp;
-                    }
-                    else
-                    {
-                        SPC["L150"].Amp = 5 + deltaAmp;
-                        SPC["L90"].Amp = 5 - deltaAmp;
-                    }
-                    SPC.Update();
+                    //Update Plots
+                    LPlotUpdate(xSlider.Value, y1, normY);
                 }
             }
         }
