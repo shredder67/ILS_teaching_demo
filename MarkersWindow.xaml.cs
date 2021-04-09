@@ -103,10 +103,10 @@ namespace MarkersDemonstration
 
             //Plots data
             SPC = new SignalPlotCollection();
-            SPC.Add("L150", new SignalPlotModel(150, 5, "КРМ 150Hz"));
-            SPC.Add("L90", new SignalPlotModel(90, 5, "КРМ 90Hz"));
-            SPC.Add("GS150", new SignalPlotModel(150, 5, "ГРМ 150Hz"));
-            SPC.Add("GS90", new SignalPlotModel(90, 5, "ГРМ 90Hz"));
+            SPC.Add("L150", new SignalPlotModel(15, 3, "КРМ 150Hz"));
+            SPC.Add("L90", new SignalPlotModel(9, 3, "КРМ 90Hz"));
+            SPC.Add("GS150", new SignalPlotModel(15, 3, "ГРМ 150Hz"));
+            SPC.Add("GS90", new SignalPlotModel(9, 3, "ГРМ 90Hz"));
 
             InitializeComponent();
         }
